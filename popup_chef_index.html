@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pop-Up Chef | Pickup Ordering Preview</title>
+<style>
+:root{font-family:Arial,sans-serif;color:#f7f1d5;background:#101510}*{box-sizing:border-box}
+body{margin:0}header{background:#173c22;padding:24px 16px;text-align:center;border-bottom:4px solid #d6af46}
+h1{color:#e7c65d;margin:0}h2{color:#e7c65d}main{max-width:850px;margin:auto;padding:18px}
+.notice{background:#34290f;padding:15px;border:1px solid #d6af46;border-radius:10px}
+.card{background:#1d2b20;padding:18px;margin:15px 0;border:1px solid #6c8c59;border-radius:12px}
+label{display:block;margin:10px 0 5px}select,input{width:100%;padding:12px;border-radius:6px;border:1px solid #9da894;font-size:16px}
+button{padding:12px 16px;background:#d6af46;color:#101510;border:0;border-radius:7px;font-weight:bold;cursor:pointer;margin-top:12px}
+button:disabled{opacity:.5}ul{padding-left:20px}li{margin:10px 0}small{color:#d6d6c8}
+</style>
+</head>
+<body>
+<header><h1>POP-UP CHEF</h1><p>Everything Is Made With Love ❤️</p></header>
+<main>
+<div class="notice"><strong>Ordering preview only.</strong> Live ordering and payments are not enabled yet. Pickup location will be posted when the truck opens.</div>
+<h2>Build Your Pickup Order</h2>
+<section class="card">
+<h3>Egg Roll Special — 2 for $10</h3>
+<p>Mix and match any two.</p>
+<label for="roll1">First egg roll</label><select id="roll1"><option>Philly Chicken</option><option>Philly Steak</option><option>Italian Beef</option></select>
+<label for="roll2">Second egg roll</label><select id="roll2"><option>Philly Chicken</option><option>Philly Steak</option><option>Italian Beef</option></select>
+<label for="sauce">Dipping sauce</label><select id="sauce"><option>Zesty Buffalo</option><option>Sweet Chili</option><option>Honey Mustard</option><option>Sweet & Spicy Sriracha</option><option>Sweet & Sour</option></select>
+<label for="specialQty">Number of 2-roll specials</label><input id="specialQty" type="number" min="1" max="30" value="1">
+<button onclick="addSpecial()">Add Special to Cart</button>
+</section>
+<section class="card">
+<h3>Loaded Egg Roll — $15</h3><p>Extra meat, extra cheese, and toppings.</p>
+<label for="loadedMeat">Meat</label><select id="loadedMeat"><option>Philly Chicken</option><option>Philly Steak</option><option>Italian Beef</option></select>
+<label for="loadedSauce">Dipping sauce</label><select id="loadedSauce"><option>Zesty Buffalo</option><option>Sweet Chili</option><option>Honey Mustard</option><option>Sweet & Spicy Sriracha</option><option>Sweet & Sour</option></select>
+<label for="loadedQty">Quantity</label><input id="loadedQty" type="number" min="1" max="30" value="1">
+<button onclick="addLoaded()">Add Loaded Egg Roll</button>
+</section>
+<section class="card">
+<h3>Iced Tea & Lemonade — $5</h3>
+<label for="drink">Choose a drink</label><select id="drink"><option>Regular Iced Tea</option><option>Peach Iced Tea</option><option>Mango Iced Tea</option><option>Watermelon Iced Tea</option><option>Strawberry Iced Tea</option><option>Regular Lemonade</option><option>Peach Lemonade</option><option>Mango Lemonade</option><option>Watermelon Lemonade</option><option>Strawberry Lemonade</option></select>
+<label for="drinkQty">Quantity</label><input id="drinkQty" type="number" min="1" max="30" value="1">
+<button onclick="addDrink()">Add Drink</button>
+</section>
+<section class="card">
+<h2>Your Cart</h2><ul id="items"><li>Your cart is empty.</li></ul>
+<p><strong>Subtotal: <span id="total">$0.00</span></strong></p>
+<button id="clear" onclick="cart=[];render()" disabled>Clear Cart</button>
+<p><small>Checkout is disabled until secure payment, order storage, kitchen notifications, pickup controls, and applicable taxes are configured and tested.</small></p>
+<button disabled>Checkout — Coming Soon</button>
+</section>
+</main>
+<script>
+let cart=[];
+const el=id=>document.getElementById(id);
+const qty=id=>Math.max(1,Math.min(30,parseInt(el(id).value,10)||1));
+function add(name,price,count){cart.push({name,price,count});render()}
+function addSpecial(){add('2 Egg Rolls: '+el('roll1').value+' + '+el('roll2').value+' | Sauce: '+el('sauce').value,10,qty('specialQty'))}
+function addLoaded(){add('Loaded '+el('loadedMeat').value+' Egg Roll | Sauce: '+el('loadedSauce').value,15,qty('loadedQty'))}
+function addDrink(){add(el('drink').value,5,qty('drinkQty'))}
+function render(){
+const list=el('items');list.replaceChildren();
+if(!cart.length){const li=document.createElement('li');li.textContent='Your cart is empty.';list.append(li)}
+cart.forEach((item,i)=>{const li=document.createElement('li');li.textContent=item.count+' × '+item.name+' — $'+(item.price*item.count).toFixed(2)+' ';const b=document.createElement('button');b.textContent='Remove';b.onclick=()=>{cart.splice(i,1);render()};li.append(b);list.append(li)});
+el('total').textContent='$'+cart.reduce((s,x)=>s+x.price*x.count,0).toFixed(2);
+el('clear').disabled=!cart.length;
+}
+</script>
+</body></html>
